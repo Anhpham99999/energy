@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mức Điện Năng Tiêu Thụ</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        table {
+            width: 60%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .chart-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        canvas {
+            max-width: 400px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Mức Điện Năng Tiêu Thụ của 4 Phòng</h2>
+    <table>
+        <tr>
+            <th>Phòng</th>
+            <th>Mức Tiêu Thụ (kWh)</th>
+            <th>Thời Gian Tiêu Thụ (phút/kWh)</th>
+        </tr>
+        <tr>
+            <td>Phòng 1</td>
+            <td>80</td>
+            <td id="time1"></td>
+        </tr>
+        <tr>
+            <td>Phòng 2</td>
+            <td>90</td>
+            <td id="time2"></td>
+        </tr>
+        <tr>
+            <td>Phòng 3</td>
+            <td>100</td>
+            <td id="time3"></td>
+        </tr>
+        <tr>
+            <td>Phòng 4</td>
+            <td>70</td>
+            <td id="time4"></td>
+        </tr>
+    </table>
+
+    <div class="chart-container">
+        <canvas id="chart1"></canvas>
+        <canvas id="chart2"></canvas>
+        <canvas id="chart3"></canvas>
+        <canvas id="chart4"></canvas>
+    </div>
+
+    <script>
+        function generateConsumptionData(kwh) {
+            let times = [];
+            for (let i = 1; i <= kwh; i++) {
+                times.push((Math.random() * (60 - 30) + 30).toFixed(2)); // 30-60 phút/kWh
+            }
+            return times;
+        }
+        
+        function createLineChart(canvasId, label, times, color) {
+            var ctx = document.getElementById(canvasId).getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: times.length }, (_, i) => `kWh ${i + 1}`),
+                    datasets: [{
+                        label: label,
+                        data: times,
+                        borderColor: color,
+                        fill: false,
+                        tension: 0.2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Thời gian (phút)' }
+                        },
+                        x: {
+                            title: { display: true, text: 'kWh' }
+                        }
+                    }
+                }
+            });
+        }
+
+        let times1 = generateConsumptionData(80);
+        let times2 = generateConsumptionData(90);
+        let times3 = generateConsumptionData(100);
+        let times4 = generateConsumptionData(70);
+        
+        document.getElementById("time1").innerText = times1.reduce((a, b) => a + parseFloat(b), 0) + " phút";
+        document.getElementById("time2").innerText = times2.reduce((a, b) => a + parseFloat(b), 0) + " phút";
+        document.getElementById("time3").innerText = times3.reduce((a, b) => a + parseFloat(b), 0) + " phút";
+        document.getElementById("time4").innerText = times4.reduce((a, b) => a + parseFloat(b), 0) + " phút";
+        
+        createLineChart('chart1', 'Phòng 1', times1, 'red');
+        createLineChart('chart2', 'Phòng 2', times2, 'blue');
+        createLineChart('chart3', 'Phòng 3', times3, 'green');
+        createLineChart('chart4', 'Phòng 4', times4, 'purple');
+    </script>
+</body>
+</html>
